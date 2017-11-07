@@ -1,37 +1,57 @@
 package com.codeup.blog.controllers;
 
+import com.codeup.blog.models.Post;
+import com.codeup.blog.services.PostSvc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-//must add controller always DON'T FORGET LEON!!!!!
-@Controller
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller //Step 1 Annotate
 public class PostController {
 
-    @ResponseBody
-    @GetMapping("/posts")
-    public String indexPage(){
-        return "<h1>Post Index Page</h1>";
+    private final PostSvc postSvc;
+
+    @Autowired
+    public PostController(PostSvc postSvc){
+        this.postSvc = postSvc;
     }
 
-    @ResponseBody
-    @GetMapping("/posts{id}")
-    public String showPost(@PathVariable int id){
-        return "<h1>View an individual post</h1>"+ id;
+    @GetMapping("/posts") //Step 2 what url want to respond to
+    public String showAll(Model vModel) {
+//        ArrayList<Post> posts = new ArrayList<>();
+//
+//        posts.add(new Post("Title One", "Body goes here"));
+//        posts.add(new Post("Title 2", "Body goes here"));
+//        posts.add(new Post("Title 3", "Body goes here"));
+//        List<Post> posts = postSvc.findAll();
+        vModel.addAttribute("posts", postSvc.findAll());
+        return "posts/index";
     }
 
-    @ResponseBody
+    @GetMapping("/posts/{id}")
+    public String singlePost(@PathVariable int id, Model vModel) {
+        vModel.addAttribute("Post", postSvc.findOne(id));
+        return "posts/show";
+    }
+
     @GetMapping("/posts/create")
-    public String showCreateForm(){
-        return "<h1>View the form for creating posts</h1>";
+    public String ViewCreateForm(Model vModel) {
+        vModel.addAttribute("Post", new Post());
+        return "posts/create";
     }
 
-    @ResponseBody
-   @PostMapping("/posts/create")
-    public String createPost(){
-        return "Create new post";
+    @PostMapping("/posts/create")
+    public String CreatePost(@ModelAttribute Post post) {
+        postSvc.save(post);
+        return "redirect:/posts";
     }
 
-
+    @GetMapping("/posts/{id}/edit")
+    public String editPost(@ModelAttribute int id, Model vModel) {
+        vModel.addAttribute("Post", postSvc.findOne(id));
+        return "posts/edit";
+    }
 }
