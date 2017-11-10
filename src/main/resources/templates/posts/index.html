@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="fragments/header :: main-header('All Posts')"></head>
+<body>
+<nav th:include="fragments/navbar :: mainNavbar"></nav>
+
+<!--list of post--> <p>links</p>
+<!--/*@thymesVar id="posts" type=""*/-->
+<div th:each="post : ${posts}">
+    <h1>
+        <!--<a th:href="${'/posts/' + post.id}" th:text="${post.title}"></a>-->
+        <!--/*@thymesVar id="title" type=""*/-->
+        <a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
+    </h1>
+    <p th:text="${post.body}"></p>
+    <button><a th:href="@{/posts/{id}/delete(id=${post.id})}">Delete</a></button>
+</div>
+
+<footer th:include="fragments/footer :: footer"></footer>
+</body>
+</html>
