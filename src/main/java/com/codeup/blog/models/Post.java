@@ -1,10 +1,21 @@
 package com.codeup.blog.models;
+import javax.persistence.*;
 
+@Entity
+@Table(name="posts")
 public class Post {
 
+    @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(columnDefinition = "Text")
     private String body;
+    @ManyToOne
+    private User user;
 
     public Post(String title, String body) {
         this.title = title;
@@ -42,5 +53,8 @@ public class Post {
     }
     public long getId(){
         return id;
+    }
+
+    public void setUser(User user) {
     }
 }

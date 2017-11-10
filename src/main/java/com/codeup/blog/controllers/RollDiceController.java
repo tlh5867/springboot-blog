@@ -4,26 +4,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-
-@Controller
+@Controller //Step 1 Annotate
 public class RollDiceController {
-    private int random(int min, int max) {
-        return (int) Math.floor(Math.random() * (max - min + 1) + min);
+
+    @GetMapping("/roll-dice") //Step 2 what url want to respond to
+    public String showPage() {
+        return "roll-dice"; //name of the file
     }
 
-    @GetMapping("/roll-dice")
-    public String home() {
+    @GetMapping("/roll-dice/{n}") // needs to grab number from user
+    public String random(@PathVariable Integer n, Model viewModel){
+        int genNumber = (int)(Math.random() * 6 + 1); //Must CAST double to INT
+
+        viewModel.addAttribute("genNumber", genNumber);
+        viewModel.addAttribute("userNumber", n);
+//        int genNumber = (int) Math.floor((Math.random() * 6) - 1);
         return "roll-dice";
     }
 
-    @GetMapping("/roll-dice/{guess}")
-    public String roll(@PathVariable int guess, Model model) {
-        int roll = random(1, 6);
 
-        model.addAttribute("roll", roll);
-        model.addAttribute("guess", guess);
-        model.addAttribute("correctGuess", roll == guess);
-        return "roll-dice";
-    }
 }
